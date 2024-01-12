@@ -54,7 +54,7 @@ function App() {
         });
     });
     
-    const startLoginFlow = () => {
+    const startLoginFlow = (goToExternal) => {
         setContentItems(undefined);
 
 		// create request for the authorization endpoint
@@ -62,12 +62,14 @@ function App() {
             client_id: clientId,
             redirect_uri: redirectUri,
             scope: scope,
-            response_type: AuthorizationRequest.RESPONSE_TYPE_CODE,
-			// use this if you want to use a specific identity provider (e.g. external identity providers)
-            extras: {
-                // 'identity_provider': 'UmbracoMembers.GitHub'
-            }
+            response_type: AuthorizationRequest.RESPONSE_TYPE_CODE
         });
+
+        if (goToExternal) {
+            request.extras = {
+                identity_provider: 'UmbracoMembers.OpenIdConnect'
+            };
+        }
 
 		// initiate the authorization flow - this will eventually redirect the browser to the server for authorization
         authorizationHandler.performAuthorizationRequest(configuration, request);
@@ -141,7 +143,8 @@ function App() {
             { !accessToken && <>
                     <h1>Uh, ouh. You're not authorized 😔</h1>
                     <p>How about we hit the button below to fix that?</p>
-                    <button type="button" className="btn btn-primary" onClick={startLoginFlow}>Go, go, login!</button>
+                    <button type="button" className="btn btn-primary" onClick={() => startLoginFlow(false)}>Go, go, login!</button><br/>
+		    <button type="button" className="btn btn-primary" onClick={() => startLoginFlow(true)}>Go, go, login with external!</button>
                 </>
             }
 			<p>Read all about member authorization in the Delivery API in <a href="https://docs.umbraco.com/umbraco-cms/reference/content-delivery-api/protected-content-in-the-delivery-api" title="Member authorization documentation" target="_blank" rel="noreferrer">the Umbraco documentation</a></p>
