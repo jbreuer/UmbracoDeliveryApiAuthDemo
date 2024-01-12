@@ -88,7 +88,7 @@ function App() {
                 setAccessToken(undefined);
 				// the token was revoked - now redirect the browser to the "end session" endpoint to
 				// terminate the member session on the server
-                window.location = `${configuration.endSessionEndpoint}?post_logout_redirect_uri=${redirectUri}`
+                window.location = `${configuration.endSessionEndpoint}?post_logout_redirect_uri=https://localhost:44393/umbraco/delivery/api/v1/security/member/signout-external`
             }
         })
     }
