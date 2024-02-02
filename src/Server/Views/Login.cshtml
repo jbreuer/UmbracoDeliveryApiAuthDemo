@@ -1,6 +1,9 @@
 ﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
 @using Umbraco.Cms.Web.Common.Models
+@using Umbraco.Cms.Web.Common.Security
 @using Umbraco.Cms.Web.Website.Controllers
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@inject IMemberExternalLoginProviders memberExternalLoginProviders
 @{
 	Layout = null;
     var loginModel = new LoginModel {
@@ -44,5 +47,37 @@
 
 	<button type="submit">Log in</button>
 }
+
+@{
+    var loginProviders = await memberExternalLoginProviders.GetMemberProvidersAsync();
+    var externalSignInError = ViewData.GetExternalSignInProviderErrors();
+
+    if (loginProviders.Any())
+    {
+        <hr/>
+        <h4>Or using external providers</h4>
+        if (externalSignInError?.AuthenticationType is null && externalSignInError?.Errors.Any() == true)
+        {
+            @Html.DisplayFor(x => externalSignInError.Errors);
+        }
+
+        @foreach (var login in await memberExternalLoginProviders.GetMemberProvidersAsync())
+        {
+
+            @using (Html.BeginUmbracoForm<UmbExternalLoginController>(nameof(UmbExternalLoginController.ExternalLogin)))
+            {
+                <button type="submit" name="provider" value="@login.ExternalLoginProvider.AuthenticationType">
+                    Sign in with @login.AuthenticationScheme.DisplayName
+                </button>
+
+                if (externalSignInError?.AuthenticationType == login.ExternalLoginProvider.AuthenticationType)
+                {
+                    @Html.DisplayFor(x => externalSignInError.Errors);
+                }
+            }
+        }
+    }
+}
+
 </body>
 </html>
