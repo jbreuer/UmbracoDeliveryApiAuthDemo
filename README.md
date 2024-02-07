@@ -4,6 +4,9 @@ This repo contains a demo of how protected content can be accessed for members u
 
 The demo consists of a server and a client project - `src/Server` and `src/Client` respectively.
 
+> [!TIP]
+> This is a fork of the [Umbraco Delivery API - member auth demo](https://github.com/kjac/UmbracoDeliveryApiAuthDemo). It adds support for external login providers. See this [pull request](https://github.com/jbreuer/UmbracoDeliveryApiAuthDemo/pull/1) for all the changes. You can also find more info in [this blog](https://www.jeroenbreuer.nl/blog/umbraco-headless-member-auth-with-external-login-providers/).
+
 ## The server
 
 The server is an Umbraco 13 site, which means you'll need .NET 8 to run it. To start the server, open a terminal window in `src/Server` and run:
